@@ -113,6 +113,13 @@ public class QtiImsExtUtils {
     /* Incoming conference call extra key */
     public static final String QTI_IMS_INCOMING_CONF_EXTRA_KEY = "incomingConference";
 
+    /* Handover config params */
+    public static final int QTI_IMS_HO_INVALID = 0x00;
+    public static final int QTI_IMS_HO_ENABLE_ALL = 0x01;
+    public static final int QTI_IMS_HO_DISABLE_ALL = 0x02;
+    public static final int QTI_IMS_HO_ENABLED_WLAN_TO_WWAN_ONLY = 0x03;
+    public static final int QTI_IMS_HO_ENABLED_WWAN_TO_WLAN_ONLY = 0x04;
+
     /**
      * Private constructor for QtiImsExtUtils as we don't want to instantiate this class
      */
@@ -153,6 +160,24 @@ public class QtiImsExtUtils {
      */
     public static boolean isCallTransferEnabled(Context context) {
         return SystemProperties.getBoolean("persist.radio.ims_call_transfer", false);
+    }
+
+   /**
+     * This API checks to see whether we are going to use ui extension for video call or not.
+     * @param context context for getting video call ui ext configuration value
+     * Returns true if enabled, or false otherwise.
+     */
+    public static boolean useExt(Context context) {
+        return isCarrierConfigEnabled(context, QtiCarrierConfigs.USE_VIDEO_UI_EXTENSIONS);
+    }
+
+   /**
+     * This API checks to see whether custom video ui is enabled or not.
+     * @param context context for getting custom video ui configuration value
+     * Returns true if enabled, or false otherwise.
+     */
+    public static boolean useCustomVideoUi(Context context) {
+        return isCarrierConfigEnabled(context, QtiCarrierConfigs.USE_CUSTOM_VIDEO_UI);
     }
 
     /**
