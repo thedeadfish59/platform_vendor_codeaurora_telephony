@@ -40,6 +40,7 @@ import android.os.SystemProperties;
 import android.telephony.CarrierConfigManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.io.File;
@@ -416,11 +417,6 @@ public class QtiImsExtUtils {
         return b.getBoolean(carrierConfig, false);
     }
 
-    //TODO not removing this deprecated API to avoid compilation errors.
-    public static boolean allowVideoCallsInLowBattery(Context context) {
-        return allowVideoCallsInLowBattery(QtiCallConstants.INVALID_PHONE_ID, context);
-    }
-
     public static boolean allowVideoCallsInLowBattery(int phoneId, Context context) {
         return isCarrierConfigEnabled(phoneId, context,
                 QtiCarrierConfigs.ALLOW_VIDEO_CALL_IN_LOW_BATTERY);
@@ -483,5 +479,49 @@ public class QtiImsExtUtils {
             return subscriptionManager.INVALID_SUBSCRIPTION_ID;
         }
         return subInfo.getSubscriptionId();
+    }
+
+    // Returns true if global setting has stored value as true
+    public static boolean isRttOn(Context context) {
+        return (getRttMode(context) !=  QtiCallConstants.RTT_MODE_DISABLED);
+
+    }
+
+    // Returns value of RTT mode
+    public static int getRttMode(Context context) {
+        return (android.provider.Settings.Global.getInt(context.getContentResolver(),
+                QtiCallConstants.QTI_IMS_RTT_MODE, 0));
+    }
+
+    // Sets RTT mode to global settings
+    public static void setRttMode(boolean value, Context context) {
+       android.provider.Settings.Global.putInt(context.getContentResolver(),
+                QtiCallConstants.QTI_IMS_RTT_MODE, value ? 1 : 0);
+    }
+
+    // Returns true if Carrier supports RTT
+    public static boolean isRttSupported(int phoneId, Context context) {
+        return (isCarrierConfigEnabled(phoneId, context
+                , QtiCarrierConfigs.KEY_CARRIER_RTT_SUPPORTED));
+    }
+
+    // Returns true if Carrier supports RTT for Video Calls
+    public static boolean isRttSupportedOnVtCalls(int phoneId, Context context) {
+        return (isCarrierConfigEnabled(phoneId, context,
+                QtiCarrierConfigs.KEY_CARRIER_RTT_SUPPORTED_ON_VTCALLS));
+    }
+
+    // Returns true if Carrier supports RTT upgrade
+    // False otherwise
+    public static boolean isRttUpgradeSupported(int phoneId, Context context) {
+        return (isCarrierConfigEnabled(phoneId, context,
+                QtiCarrierConfigs.KEY_CARRIER_RTT_UPGRADE_SUPPORTED));
+    }
+
+    // Utility to get the RTT Mode that is set through adb property
+    // Mode can be either RTT_MODE_DISABLED or RTT_MODE_FULL
+    public static int getRttOperatingMode(Context context) {
+        int mode = SystemProperties.getInt(QtiCallConstants.PROPERTY_RTT_OPERATING_MODE, 0);
+        return mode;
     }
 }
