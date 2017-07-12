@@ -60,9 +60,6 @@ public class QtiImsExtUtils {
     public static final String QTI_IMS_CALL_DEFLECT_NUMBER =
             "ims_call_deflect_number";
 
-    /* Call deflect setting name */
-    public static final String QTI_IMS_DEFLECT_ENABLED = "qti.ims.call_deflect";
-
     /* Default success value */
     public static final int QTI_IMS_REQUEST_SUCCESS = 0;
 
@@ -91,6 +88,9 @@ public class QtiImsExtUtils {
 
     /* Call transfer extra key */
     public static final String QTI_IMS_TRANSFER_EXTRA_KEY = "transferType";
+
+    /* Ims phoneId extra key */
+    public static final String QTI_IMS_PHONE_ID_EXTRA_KEY = "phoneId";
 
     /* Constants used for VOPS and SSAC feature */
     // Intent action
@@ -129,6 +129,17 @@ public class QtiImsExtUtils {
     public static final int QTI_IMS_HO_DISABLE_ALL = 0x02;
     public static final int QTI_IMS_HO_ENABLED_WLAN_TO_WWAN_ONLY = 0x03;
     public static final int QTI_IMS_HO_ENABLED_WWAN_TO_WLAN_ONLY = 0x04;
+
+    /*Rcs app config params */
+    public static final int QTI_IMS_SMS_APP_INVALID = -1;
+    public static final int QTI_IMS_SMS_APP_SELECTION_NOT_ALLOWED = 0;
+    public static final int QTI_IMS_SMS_APP_RCS = 1;
+    public static final int QTI_IMS_SMS_APP_NOT_RCS = 2;
+
+    /*Vvm app config params */
+    public static final int QTI_IMS_VVM_APP_INVALID = -1;
+    public static final int QTI_IMS_VVM_APP_NOT_RCS = 0;
+    public static final int QTI_IMS_VVM_APP_RCS = 1;
 
     /**
      * Private constructor for QtiImsExtUtils as we don't want to instantiate this class
@@ -394,6 +405,16 @@ public class QtiImsExtUtils {
     }
 
     /**
+     * This API checks to see whether VoWiFi call quality feature is enabled or not.
+     * @param phoneId phone Id to read the configuration for specific subscription.
+     * @param context context for getting the VoWiFi call quality config value.
+     * Returns true if enabled, or false otherwise.
+     */
+    public static boolean isVoWiFiCallQualityEnabled(int phoneId, Context context) {
+        return isCarrierConfigEnabled(phoneId, context, QtiCarrierConfigs.VOWIFI_CALL_QUALITY);
+    }
+
+    /**
      * Check is carrier one supported or not
      */
     public static boolean isCarrierOneSupported() {
@@ -523,5 +544,11 @@ public class QtiImsExtUtils {
     public static int getRttOperatingMode(Context context) {
         int mode = SystemProperties.getInt(QtiCallConstants.PROPERTY_RTT_OPERATING_MODE, 0);
         return mode;
+    }
+
+    // Returns true if Carrier supports Call deflection
+    public static boolean isCallDeflectionSupported(int phoneId, Context context) {
+        return (isCarrierConfigEnabled(phoneId, context,
+                QtiCarrierConfigs.KEY_CARRIER_IMS_CALL_DEFLECT_SUPPORTED));
     }
 }
