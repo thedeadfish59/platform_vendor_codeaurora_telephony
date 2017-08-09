@@ -427,15 +427,8 @@ public class QtiImsExtUtils {
      */
     public static boolean isCarrierConfigEnabled(int phoneId, Context context,
             String carrierConfig) {
-
-        PersistableBundle b = getConfigForPhoneId(context, phoneId);
-
-        if (b == null) {
-            Log.e(LOG_TAG, "isCarrierConfigEnabled bundle is null");
-            return false;
-        }
-
-        return b.getBoolean(carrierConfig, false);
+        return QtiCarrierConfigHelper.getInstance().getBoolean(context, phoneId,
+                carrierConfig);
     }
 
     public static boolean allowVideoCallsInLowBattery(int phoneId, Context context) {
@@ -546,9 +539,22 @@ public class QtiImsExtUtils {
         return mode;
     }
 
+    // Returns true if Carrier supports RTT downgrade
+    // False otherwise
+    public static boolean isRttDowngradeSupported(int phoneId, Context context) {
+        return (isCarrierConfigEnabled(phoneId, context,
+                QtiCarrierConfigs.KEY_CARRIER_RTT_DOWNGRADE_SUPPORTED));
+    }
+
     // Returns true if Carrier supports Call deflection
     public static boolean isCallDeflectionSupported(int phoneId, Context context) {
         return (isCarrierConfigEnabled(phoneId, context,
                 QtiCarrierConfigs.KEY_CARRIER_IMS_CALL_DEFLECT_SUPPORTED));
+    }
+
+    // Returns true if Carrier supports Cancel Modify Call
+    public static boolean isCancelModifyCallSupported(int phoneId, Context context) {
+        return (isCarrierConfigEnabled(phoneId, context,
+                QtiCarrierConfigs.KEY_CARRIER_CANCEL_MODIFY_CALL_SUPPORTED));
     }
 }
